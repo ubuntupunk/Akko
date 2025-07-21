@@ -413,7 +413,17 @@ var MusicPlayer = function () {
             Promise.resolve().then(function () {
                 return track.prepareArrayBuffer();
             }).then(function (arrayBuffer) {
-                return _this.context.decodeAudioData(arrayBuffer);
+                // Clone the array buffer to prevent detachment
+                var clonedBuffer = arrayBuffer.slice(0);
+                
+                // Use promise-based decodeAudioData with proper error handling
+                return new Promise(function(resolve, reject) {
+                    _this.context.decodeAudioData(
+                        clonedBuffer,
+                        resolve,
+                        reject
+                    );
+                });
             }).then(function (audioBuffer) {
                 _this.buffer = audioBuffer;
                 _this.stop();
@@ -2243,9 +2253,15 @@ var Track = function () {
             switch (this.sourceType) {
                 case SourceTypes.URL:
                     return window.fetch(this.source).then(function (response) {
-                        var arrayBuffer = response.arrayBuffer();
-                        _this.arrayBufferCache = arrayBuffer;
-                        return arrayBuffer;
+                        if (!response.ok) {
+                            throw new Error('HTTP ' + response.status + ': ' + response.statusText);
+                        }
+                        return response.arrayBuffer();
+                    }).then(function (arrayBuffer) {
+                        // Clone the buffer to prevent detachment issues
+                        var clonedBuffer = arrayBuffer.slice(0);
+                        _this.arrayBufferCache = clonedBuffer;
+                        return clonedBuffer;
                     });
                 case SourceTypes.FILE:
                     return new Promise(function (resolve, reject) {
