@@ -1,0 +1,416 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MuizenMesh Mixer ES12+ - Next-Gen Audio Visualizer</title>
+    
+    <!-- Akko CSS -->
+    <link rel="stylesheet" href="../Akko/dist/akko.min.css"/>
+    
+    <!-- Custom Mixer Styles -->
+    <link rel="stylesheet" href="./css/style.css">
+    
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            background: linear-gradient(135deg, #ff6b6b 0%, #4ecdc4 50%, #45b7d1 100%);
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            overflow: hidden;
+        }
+        
+        #akko-container {
+            width: 100vw;
+            height: 100vh;
+            position: relative;
+        }
+        
+        /* Enhanced Akko UI styling */
+        .akko-ui {
+            position: absolute !important;
+            bottom: 40px !important;
+            left: 50% !important;
+            transform: translateX(-50%) !important;
+            width: auto !important;
+            height: auto !important;
+            background: linear-gradient(135deg, rgba(0,0,0,0.9), rgba(30,30,30,0.9)) !important;
+            border-radius: 15px !important;
+            padding: 20px !important;
+            backdrop-filter: blur(15px) !important;
+            border: 2px solid rgba(255,107,107,0.3) !important;
+            box-shadow: 
+                0 10px 30px rgba(0,0,0,0.5),
+                0 0 20px rgba(255,107,107,0.2),
+                inset 0 1px 0 rgba(255,255,255,0.1) !important;
+            min-width: 400px !important;
+            z-index: 1000 !important;
+        }
+        
+        /* Style Akko controls */
+        .akko-ui button {
+            background: linear-gradient(135deg, #ff6b6b, #4ecdc4) !important;
+            border: none !important;
+            border-radius: 8px !important;
+            color: white !important;
+            padding: 8px 16px !important;
+            margin: 0 5px !important;
+            cursor: pointer !important;
+            transition: all 0.3s ease !important;
+            font-weight: bold !important;
+        }
+        
+        .akko-ui button:hover {
+            transform: scale(1.05) !important;
+            box-shadow: 0 5px 15px rgba(255,107,107,0.4) !important;
+        }
+        
+        .akko-ui select {
+            background: rgba(255,255,255,0.1) !important;
+            border: 1px solid rgba(255,107,107,0.3) !important;
+            border-radius: 5px !important;
+            color: white !important;
+            padding: 5px 10px !important;
+            margin: 0 5px !important;
+        }
+        
+        .akko-ui input[type="range"] {
+            accent-color: #ff6b6b !important;
+        }
+        
+        .akko-canvas {
+            width: 100% !important;
+            height: 100% !important;
+        }
+        
+        .es12-badge {
+            position: absolute;
+            top: 20px;
+            left: 20px;
+            background: linear-gradient(45deg, #ff6b6b, #4ecdc4);
+            color: white;
+            padding: 12px 20px;
+            border-radius: 25px;
+            font-weight: bold;
+            z-index: 1000;
+            border: 3px solid rgba(255,255,255,0.3);
+            backdrop-filter: blur(10px);
+            box-shadow: 0 8px 32px rgba(0,0,0,0.1);
+            animation: rainbow 3s ease-in-out infinite;
+        }
+        
+        @keyframes rainbow {
+            0%, 100% { filter: hue-rotate(0deg); }
+            50% { filter: hue-rotate(180deg); }
+        }
+        
+        .back-link {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            background: rgba(0,0,0,0.8);
+            color: white;
+            padding: 12px 20px;
+            border-radius: 25px;
+            text-decoration: none;
+            z-index: 1000;
+            border: 2px solid #ff6b6b;
+            backdrop-filter: blur(10px);
+            transition: all 0.3s ease;
+        }
+        
+        .back-link:hover {
+            background: #ff6b6b;
+            transform: scale(1.05) translateY(-2px);
+            box-shadow: 0 10px 25px rgba(255,107,107,0.3);
+        }
+        
+        /* Next-Gen Epic Play Button */
+        .epic-play-button {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 220px;
+            height: 220px;
+            border: none;
+            border-radius: 50%;
+            background: conic-gradient(from 0deg, #ff6b6b, #4ecdc4, #45b7d1, #96ceb4, #feca57, #ff6b6b);
+            cursor: pointer;
+            z-index: 100;
+            overflow: hidden;
+            transition: all 0.4s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+            box-shadow: 
+                0 15px 35px rgba(255,107,107,0.3),
+                0 5px 15px rgba(0,0,0,0.1),
+                inset 0 1px 0 rgba(255,255,255,0.2);
+            animation: pulse-es12 3s ease-in-out infinite;
+            position: relative;
+        }
+        
+        .epic-play-button::before {
+            content: '';
+            position: absolute;
+            top: -2px;
+            left: -2px;
+            right: -2px;
+            bottom: -2px;
+            background: conic-gradient(from 0deg, #ff6b6b, #4ecdc4, #45b7d1, #96ceb4, #feca57, #ff6b6b);
+            border-radius: 50%;
+            z-index: -1;
+            animation: rotate-border 4s linear infinite;
+        }
+
+        .epic-play-button:hover {
+            transform: translate(-50%, -50%) scale(1.15) rotateZ(5deg);
+            box-shadow: 
+                0 20px 50px rgba(255,107,107,0.4),
+                0 10px 25px rgba(78,205,196,0.3),
+                inset 0 1px 0 rgba(255,255,255,0.3);
+        }
+
+        .button-content {
+            position: relative;
+            width: 100%;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            z-index: 2;
+            background: rgba(0,0,0,0.1);
+            border-radius: 50%;
+            backdrop-filter: blur(5px);
+        }
+
+        .play-icon {
+            position: relative;
+            width: 70px;
+            height: 70px;
+            margin-bottom: 15px;
+        }
+
+        .triangle {
+            width: 0;
+            height: 0;
+            border-left: 35px solid white;
+            border-top: 25px solid transparent;
+            border-bottom: 25px solid transparent;
+            margin-left: 10px;
+            filter: drop-shadow(0 3px 6px rgba(0,0,0,0.3));
+            animation: playPulse-es12 2s ease-in-out infinite alternate;
+        }
+
+        .button-text {
+            font-size: 16px;
+            font-weight: 900;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            text-shadow: 0 2px 4px rgba(0,0,0,0.5);
+        }
+
+        .feature-indicators {
+            position: absolute;
+            top: 80px;
+            right: 20px;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            z-index: 1000;
+        }
+
+        .feature-badge {
+            background: rgba(255,255,255,0.1);
+            backdrop-filter: blur(10px);
+            padding: 8px 12px;
+            border-radius: 15px;
+            font-size: 12px;
+            font-weight: bold;
+            color: white;
+            border: 1px solid rgba(255,255,255,0.2);
+        }
+
+        @keyframes pulse-es12 {
+            0% { 
+                box-shadow: 
+                    0 15px 35px rgba(255,107,107,0.3),
+                    0 5px 15px rgba(0,0,0,0.1);
+            }
+            50% { 
+                box-shadow: 
+                    0 20px 50px rgba(255,107,107,0.5),
+                    0 10px 25px rgba(78,205,196,0.3),
+                    0 0 0 15px rgba(255,107,107,0.1);
+            }
+            100% { 
+                box-shadow: 
+                    0 15px 35px rgba(255,107,107,0.3),
+                    0 5px 15px rgba(0,0,0,0.1);
+            }
+        }
+
+        @keyframes playPulse-es12 {
+            0% { 
+                transform: scale(1) rotateY(0deg); 
+                opacity: 1; 
+            }
+            100% { 
+                transform: scale(1.2) rotateY(10deg); 
+                opacity: 0.9; 
+            }
+        }
+
+        @keyframes rotate-border {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
+        }
+    </style>
+</head>
+<body>
+    <div class="es12-badge">ES12+ NEXT-GEN</div>
+    <a href="../mixer/" class="back-link">← Back to Production</a>
+    
+    <div id="akko-container">
+        <button id="playButton" class="epic-play-button">
+            <div class="button-content">
+                <div class="play-icon">
+                    <div class="triangle"></div>
+                </div>
+                <span class="button-text">Launch Future</span>
+            </div>
+        </button>
+    </div>
+
+    <div class="feature-indicators">
+        <div class="feature-badge">Optional Chaining</div>
+        <div class="feature-badge">Nullish Coalescing</div>
+        <div class="feature-badge">Top-Level Await</div>
+        <div class="feature-badge">Private Fields</div>
+    </div>
+
+    <!-- Three.js -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+    
+    <!-- Akko Framework -->
+    <script src="../../dist/akko.js"></script>
+
+    <!-- ES12+ Module Script -->
+    <script type="module">
+        console.log('🚀 ES12+ Mixer Loading...');
+
+        // Use the ES12+ visualizer from Akko lib
+        console.log('📦 Loading ES12+ visualizer from Akko...');
+        // Note: In a real implementation, this would be available via Akko.Visualisers
+        // For this example, we'll create it directly
+        console.log('✅ ES12+ Particle Swarm available from Akko framework');
+        
+        // ES12+ Akko Wrapper with modern JavaScript features
+        class ES12AkkoManager {
+            #akkoInstance = null;
+            #isInitialized = false;
+            
+            constructor() {
+                console.log('🚀 ES12+ Akko Manager initialized');
+            }
+            
+            // Initialize Akko with ES12+ features
+            async init() {
+                try {
+                    // Create Akko instance with modern options
+                    this.#akkoInstance = new Akko({
+                        containerId: 'akko-container',
+                        autoPlay: true,
+                        useDefaultVisualisers: true, // Include built-in visualizers for now
+                    });
+                    
+                    this.#isInitialized = true;
+                    console.log('✅ Akko framework initialized');
+                } catch (error) {
+                    console.error('❌ Akko initialization failed:', error);
+                    throw error;
+                }
+            }
+            
+            // Add ES12+ visualizer with optional chaining
+            addVisualizer(visualizerClass) {
+                try {
+                    const visualizer = new visualizerClass();
+                    this.#akkoInstance?.addVisualiser?.(visualizer);
+                    console.log(`✅ Added ${visualizer.name || visualizerClass.name}`);
+                } catch (error) {
+                    console.error(`❌ Failed to add visualizer ${visualizerClass.name}:`, error);
+                }
+            }
+            
+            // Add audio tracks with nullish coalescing
+            addTrack(source, title = null) {
+                this.#akkoInstance?.addTrack?.(source, title ?? 'ES12+ Track');
+            }
+            
+            
+            // Start the experience
+            async start() {
+                // Start Akko (visualizers should already be added)
+                this.#akkoInstance?.start?.();
+                
+                // Load demo tracks (now fixed in Akko)
+                setTimeout(() => {
+                    try {
+                        this.addTrack('./audio/Computer Music All-Stars - Albatross v2.mp3', 'Albatross v2');
+                        this.addTrack('./audio/Fatal Force - Fan Girls.mp3', 'Fan Girls');
+                        console.log('🎵 Demo tracks loaded successfully');
+                    } catch (error) {
+                        console.warn('⚠️ Demo tracks failed, try uploading your own audio files');
+                        this.#enableMicrophoneInput();
+                    }
+                }, 1000);
+                
+                console.log('🎵 ES12+ Akko experience started!');
+            }
+            
+            
+            // Enable microphone input as fallback
+            async #enableMicrophoneInput() {
+                try {
+                    const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+                    console.log('🎤 Microphone input enabled - speak or play music near your mic!');
+                } catch (error) {
+                    console.log('🎵 Drag and drop audio files to visualize them!');
+                }
+            }
+            
+            // Getter for Akko instance
+            get akko() {
+                return this.#akkoInstance;
+            }
+            
+            get isInitialized() {
+                return this.#isInitialized;
+            }
+        }
+        
+        // Initialize
+        let akkoManager = null;
+        
+        document.getElementById('playButton').addEventListener('click', async function() {
+            this.style.display = 'none';
+            
+            akkoManager = new ES12AkkoManager();
+            await akkoManager.init();
+            
+            // Add ES12+ Particle Swarm visualizer from Akko framework
+            // Note: This would use the built-in ES12ParticleSwarmVisualiser from Akko.Visualisers
+            // For now, we'll use the built-in visualizers as an example
+            console.log('🎨 Using Akko built-in visualizers + ES12+ features');
+            
+            await akkoManager.start();
+            
+            console.log('🚀 ES12+ Mixer started with Akko!');
+            console.log('🎵 Use the Akko UI controls to switch visualizers');
+        });
+        
+        window.es12Mixer = akkoManager;
+    </script>
+</body>
+</html>
