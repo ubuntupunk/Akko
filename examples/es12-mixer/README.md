@@ -26,10 +26,25 @@ This example showcases the ES12+ Particle Swarm Visualiser integrated with the A
 
 ## Usage
 
-1. **Open in Browser**: Load `index.html` in a modern browser
-2. **Click "Launch Future"**: Initialize the ES12+ mixer
-3. **Allow Audio**: Grant microphone access or use demo tracks
-4. **Control Panel**: Use top-right controls when Particle Swarm is active
+### 🚨 **Server Required**
+This example uses ES modules and requires an HTTP server:
+
+```bash
+# From Akko root directory
+npm run examples
+# Then visit: http://localhost:8080/examples/es12-mixer/
+```
+
+**Cannot run directly via `file://` protocol** due to:
+- ES6 modules (`<script type="module">`)
+- CORS restrictions on audio files
+
+### Steps:
+1. **Start Server**: `npm run examples` from project root
+2. **Open Browser**: Navigate to `http://localhost:8080/examples/es12-mixer/`
+3. **Click "Launch Future"**: Initialize the ES12+ mixer
+4. **Allow Audio**: Grant microphone access or use demo tracks
+5. **Control Panel**: Use top-right controls when Particle Swarm is active
 
 ## Browser Requirements
 
