@@ -6,7 +6,7 @@
     <title>MuizenMesh Mixer ES12+ - Next-Gen Audio Visualizer</title>
     
     <!-- Akko CSS -->
-    <link rel="stylesheet" href="../Akko/dist/akko.min.css"/>
+    <link rel="stylesheet" href="../../dist/akko.css"/>
     
     <!-- Custom Mixer Styles -->
     <link rel="stylesheet" href="./css/style.css">
@@ -219,6 +219,77 @@
             gap: 10px;
             z-index: 1000;
         }
+        
+        /* ES12+ Control Panel Styles */
+        #es12-controls {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            z-index: 1000;
+        }
+        
+        .es12-control-panel {
+            background: linear-gradient(135deg, rgba(0,0,0,0.9), rgba(30,30,30,0.9));
+            border-radius: 15px;
+            padding: 20px;
+            backdrop-filter: blur(15px);
+            border: 2px solid rgba(255,107,107,0.3);
+            box-shadow: 
+                0 10px 30px rgba(0,0,0,0.5),
+                0 0 20px rgba(255,107,107,0.2),
+                inset 0 1px 0 rgba(255,255,255,0.1);
+            min-width: 250px;
+            color: white;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        .es12-control-panel h3 {
+            margin: 0 0 15px 0;
+            color: #ff6b6b;
+            text-align: center;
+            font-size: 16px;
+        }
+        
+        .control-group {
+            margin-bottom: 15px;
+        }
+        
+        .control-group label {
+            display: block;
+            margin-bottom: 5px;
+            font-size: 14px;
+            color: #4ecdc4;
+            font-weight: bold;
+        }
+        
+        .control-group select {
+            width: 100%;
+            background: rgba(255,255,255,0.1);
+            border: 1px solid rgba(255,107,107,0.3);
+            border-radius: 8px;
+            color: white;
+            padding: 8px 12px;
+            font-size: 14px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        
+        .control-group select:hover {
+            border-color: rgba(255,107,107,0.6);
+            background: rgba(255,255,255,0.15);
+        }
+        
+        .control-group select:focus {
+            outline: none;
+            border-color: #ff6b6b;
+            box-shadow: 0 0 10px rgba(255,107,107,0.3);
+        }
+        
+        .control-group input[type="range"] {
+            width: 100%;
+            accent-color: #ff6b6b;
+            cursor: pointer;
+        }
 
         .feature-badge {
             background: rgba(255,255,255,0.1);
@@ -269,7 +340,7 @@
 </head>
 <body>
     <div class="es12-badge">ES12+ NEXT-GEN</div>
-    <a href="../mixer/" class="back-link">← Back to Production</a>
+    <a href="../" class="back-link">⏰ Back in Time</a>
     
     <div id="akko-container">
         <button id="playButton" class="epic-play-button">
@@ -388,6 +459,87 @@
             get isInitialized() {
                 return this.#isInitialized;
             }
+            
+            // Create ES12+ specific controls
+            createES12Controls() {
+                // Create control panel
+                const controlPanel = document.createElement('div');
+                controlPanel.id = 'es12-controls';
+                controlPanel.innerHTML = `
+                    <div class="es12-control-panel">
+                        <h3>🌟 ES12+ Particle Controls</h3>
+                        <div class="control-group">
+                            <label>Particle Style:</label>
+                            <select id="particleStyle">
+                                <option value="points">Points</option>
+                                <option value="cubes">Cubes</option>
+                                <option value="spheres">Spheres</option>
+                            </select>
+                        </div>
+                        <div class="control-group">
+                            <label>Color Scheme:</label>
+                            <select id="colorScheme">
+                                <option value="rainbow">Rainbow</option>
+                                <option value="fire">Fire</option>
+                                <option value="ocean">Ocean</option>
+                                <option value="neon">Neon</option>
+                                <option value="cyber">Cyber</option>
+                            </select>
+                        </div>
+                        <div class="control-group">
+                            <label>Particle Count: <span id="particleCountValue">1000</span></label>
+                            <input type="range" id="particleCount" min="100" max="2000" value="1000" step="100">
+                        </div>
+                    </div>
+                `;
+                
+                document.body.appendChild(controlPanel);
+                
+                // Add event listeners
+                this.#setupControlListeners();
+            }
+            
+            // Setup control event listeners
+            #setupControlListeners() {
+                const particleStyleSelect = document.getElementById('particleStyle');
+                const colorSchemeSelect = document.getElementById('colorScheme');
+                const particleCountSlider = document.getElementById('particleCount');
+                const particleCountValue = document.getElementById('particleCountValue');
+                
+                // Get the ES12 Particle Swarm visualizer
+                const getParticleVisualizer = () => {
+                    return this.#akkoInstance?.visCore?.visualisers?.find(vis => 
+                        vis.name === 'ES12+ Particle Swarm'
+                    );
+                };
+                
+                particleStyleSelect?.addEventListener('change', (e) => {
+                    const visualizer = getParticleVisualizer();
+                    if (visualizer && visualizer.setParticleStyle) {
+                        visualizer.setParticleStyle(e.target.value);
+                        console.log(`🎨 Particle style changed to: ${e.target.value}`);
+                    }
+                });
+                
+                colorSchemeSelect?.addEventListener('change', (e) => {
+                    const visualizer = getParticleVisualizer();
+                    if (visualizer && visualizer.setColorScheme) {
+                        visualizer.setColorScheme(e.target.value);
+                        console.log(`🌈 Color scheme changed to: ${e.target.value}`);
+                    }
+                });
+                
+                particleCountSlider?.addEventListener('input', (e) => {
+                    const count = parseInt(e.target.value);
+                    particleCountValue.textContent = count;
+                    
+                    const visualizer = getParticleVisualizer();
+                    if (visualizer && visualizer.setParticleCount) {
+                        visualizer.setParticleCount(count);
+                        console.log(`🔢 Particle count changed to: ${count}`);
+                    }
+                });
+            }
         }
         
         // Initialize
@@ -406,8 +558,12 @@
             
             await akkoManager.start();
             
+            // Create ES12+ controls for the Particle Swarm visualizer
+            akkoManager.createES12Controls();
+            
             console.log('🚀 ES12+ Mixer started with Akko!');
             console.log('🎵 Use the Akko UI controls to switch visualizers');
+            console.log('🎛️ ES12+ Particle Swarm controls available in top-right corner');
         });
         
         window.es12Mixer = akkoManager;

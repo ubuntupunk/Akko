@@ -84,6 +84,37 @@ Then:
 const Akko = require('akko');
 ```
 
+# Changelog
+
+## Version 0.1.1 (Latest Build)
+
+### 🔧 Core Framework Fixes
+- **Fixed audio buffer handling**: Resolved ArrayBuffer detachment issues in MusicPlayer
+  - Added proper buffer cloning to prevent detachment errors
+  - Improved error handling for audio decoding failures
+  - Enhanced track loading reliability
+
+### 🛠️ Module System Improvements  
+- **Fixed circular dependency issues** in visualiser modules
+  - Updated BarVisualiser, RingVisualiser to import Visualiser directly
+  - Resolved CommonJS/ES6 module compatibility issues
+  - Improved webpack build process
+
+### 📦 New Example: ES12+ Mixer
+- **Added comprehensive ES12+ demonstration** showcasing modern JavaScript integration
+  - ES12ParticleSwarmVisualiser with private fields, optional chaining, nullish coalescing
+  - Interactive control panel for real-time parameter adjustment
+  - Modern UI with glassmorphism design
+  - Demonstrates how to extend Akko with cutting-edge JavaScript features
+
+### 🎯 Key Framework Benefits
+- **More reliable audio playback** - no more buffer detachment errors
+- **Better module architecture** - cleaner imports and exports
+- **Modern JavaScript compatibility** - works with latest language features
+- **Enhanced developer experience** - easier to extend and customize
+
+---
+
 # Contributing
 
 This project is still in its early development phase, so a lot of things are likely to change. If you want to extend the source code, please [create a new issue](https://github.com/TimboKZ/Akko/issues) so we can discuss the changes you want to make before you start.

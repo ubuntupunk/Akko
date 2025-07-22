@@ -1,3 +1,4 @@
+@use "sass:color"
 $background: rgba(255, 255, 255, 0.05)
 $controls-height: 60px
 
@@ -6,9 +7,9 @@ $text-secondary: #ccc
 $brand: #c75e58
 
 $button-bg: $background
-$button-bg-hover: transparentize(#c75e58, 0.8)
+$button-bg-hover: color.adjust(#c75e58, $alpha: -0.8)
 $button-bg-active: #c75e58
-$button-bg-active-hover: transparentize(#c75e58, 0.2)
+$button-bg-active-hover: color.adjust(#c75e58, $alpha: -0.2)
 
 @mixin control-button
   background-color: $button-bg
