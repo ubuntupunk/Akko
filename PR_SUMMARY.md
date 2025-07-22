@@ -121,6 +121,30 @@ This PR introduces critical bug fixes, modern JavaScript integration patterns, a
 
 ## 🧪 Testing
 
+### 🚀 **Quick Testing for Maintainers**
+**Minimum verification (no server required):**
+```bash
+# Open directly in browser
+firefox examples/akko-inline.html
+```
+- ✅ Verifies core framework fixes work
+- ✅ Tests visualizer switching and UI
+- ✅ Confirms no "Akko is not a constructor" errors
+- ✅ Drag & drop audio testing available
+
+### 🌐 **Full Testing (Server Required)**
+**For complete feature testing:**
+```bash
+npm run examples
+# Visit: http://localhost:8080/examples/es12-mixer/
+```
+
+### 📋 **Testing Documentation**
+- **TESTING.md**: Comprehensive guide for maintainers
+- **Server requirements**: Clearly documented for ES12+ examples
+- **Browser compatibility**: Detailed compatibility matrix
+- **Troubleshooting**: Common issues and solutions
+
 ### Manual Testing Completed
 - ✅ Audio file loading and playback across browsers
 - ✅ Drag & drop functionality
